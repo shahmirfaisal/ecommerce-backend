@@ -49,8 +49,6 @@ const orderSchema = new Schema({
     zipCode: {
       type: Number,
       required: true,
-      min: 5,
-      max: 5,
     },
   },
   status: {

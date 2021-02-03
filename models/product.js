@@ -23,6 +23,7 @@ const productSchema = new Schema({
   quantity: {
     type: Number,
     required: true,
+    min: 0,
   },
   sold: {
     type: Number,
@@ -31,6 +32,7 @@ const productSchema = new Schema({
   price: {
     type: Number,
     required: true,
+    min: 0,
   },
   created: {
     type: Date,
@@ -51,6 +53,8 @@ const productSchema = new Schema({
       rating: {
         type: Number,
         required: true,
+        min: 1,
+        max: 5,
       },
       comment: {
         type: String,
@@ -60,7 +64,33 @@ const productSchema = new Schema({
   ],
   rating: {
     type: Number,
+    default: null,
+  },
+  status: {
+    type: String,
+    required: true,
+    enum: ["PRIVATE", "PUBLIC"],
   },
 });
+
+productSchema.methods.addReview = async function (
+  user,
+  order,
+  rating,
+  comment
+) {
+  const reviewExist = this.reviews.find((review) => review.order == order);
+
+  if (reviewExist) throw new Error("Already reviewed!");
+
+  const review = { user, order, rating, comment };
+  this.reviews = [review, ...this.reviews];
+  this.rating =
+    this.reviews.reduce((total, review) => total + review.rating, 0) /
+    this.reviews.length;
+
+  const product = await this.save();
+  return product;
+};
 
 module.exports = mongoose.model("Product", productSchema);
