@@ -24,7 +24,9 @@ exports.getIsLogin = (req, res, next) => res.json({ message: "Logged In" });
 
 exports.getProducts = async (req, res, next) => {
   try {
-    const products = await Product.find().populate("category");
+    const products = await Product.find()
+      .populate("category")
+      .populate("reviews.user");
     res.json({ products });
   } catch (error) {
     errorHandler(next, error.message);
@@ -35,7 +37,9 @@ exports.getProduct = async (req, res, next) => {
   const { id } = req.params;
 
   try {
-    const product = await Product.findById(id).populate("category");
+    const product = await Product.findById(id)
+      .populate("category")
+      .populate("reviews.user", "name");
     res.json({ product });
   } catch (error) {
     errorHandler(next, error.message);

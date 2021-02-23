@@ -54,7 +54,9 @@ userSchema.methods.addToCart = async function (productId) {
     // When the product already exist in the cart
     items[index].quantity++;
     if (items[index].quantity > product.quantity) {
-      throw new Error(`Only ${product.quantity} available in stock!`);
+      throw new Error(
+        `Out of stock! Only ${product.quantity} available in stock!`
+      );
     }
   }
 

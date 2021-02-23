@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const cors = require("cors");
 const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const helmet = require("helmet");
 
 const adminRoutes = require("./routes/admin");
 const userRoutes = require("./routes/user");
@@ -15,6 +16,8 @@ const { errorHandler } = require("./utils");
 const User = require("./models/user");
 
 const app = express();
+
+app.use(helmet());
 
 app.use(express.json());
 
@@ -55,5 +58,5 @@ app.use((error, req, res, next) => {
     useUnifiedTopology: true,
     useNewUrlParser: true,
   });
-  app.listen(process.env.PORT || 5000, () => console.log("Listening at 5000!"));
+  app.listen(process.env.PORT || 5000);
 })();

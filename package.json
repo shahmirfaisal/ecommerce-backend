@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "14.15.4"
+  },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "startDev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +20,7 @@
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "helmet": "^4.4.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.14",
     "stripe": "^8.132.0"

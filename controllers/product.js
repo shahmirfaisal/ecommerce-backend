@@ -135,7 +135,9 @@ exports.getProduct = async (req, res, next) => {
     const product = await Product.findOne({
       _id: id,
       status: "PUBLIC",
-    }).populate("category");
+    })
+      .populate("category")
+      .populate("reviews.user", "name");
     res.json({ product });
   } catch (error) {
     errorHandler(next, error.message);
@@ -143,10 +145,22 @@ exports.getProduct = async (req, res, next) => {
 };
 
 exports.getProducts = async (req, res, next) => {
+  const { search } = req.query;
+
+  const regex = new RegExp(search, "gi");
+
   try {
-    const products = await Product.find({ status: "PUBLIC" }).populate(
-      "category"
-    );
+    if (search) {
+      var products = await Product.find({
+        status: "PUBLIC",
+        name: { $regex: regex },
+      }).populate("category");
+    } else {
+      var products = await Product.find({ status: "PUBLIC" }).populate(
+        "category"
+      );
+    }
+
     res.json({ products });
   } catch (error) {
     errorHandler(next, error.message);
