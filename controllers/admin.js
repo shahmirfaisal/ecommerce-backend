@@ -26,7 +26,9 @@ exports.getProducts = async (req, res, next) => {
   try {
     const products = await Product.find()
       .populate("category")
-      .populate("reviews.user");
+      .populate("reviews.user")
+      .sort({ created: -1 })
+      .exec();
     res.json({ products });
   } catch (error) {
     errorHandler(next, error.message);
@@ -48,7 +50,10 @@ exports.getProduct = async (req, res, next) => {
 
 exports.getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find().populate("items.product");
+    const orders = await Order.find()
+      .populate("items.product")
+      .sort({ date: -1 })
+      .exec();
     res.json({ orders });
   } catch (error) {
     errorHandler(next, error.message);

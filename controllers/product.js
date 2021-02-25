@@ -154,11 +154,15 @@ exports.getProducts = async (req, res, next) => {
       var products = await Product.find({
         status: "PUBLIC",
         name: { $regex: regex },
-      }).populate("category");
+      })
+        .populate("category")
+        .sort({ created: -1 })
+        .exec();
     } else {
-      var products = await Product.find({ status: "PUBLIC" }).populate(
-        "category"
-      );
+      var products = await Product.find({ status: "PUBLIC" })
+        .populate("category")
+        .sort({ created: -1 })
+        .exec();
     }
 
     res.json({ products });
@@ -173,7 +177,10 @@ exports.getCategoryProducts = async (req, res, next) => {
     const products = await Product.find({
       category: id,
       status: "PUBLIC",
-    }).populate("category");
+    })
+      .populate("category")
+      .sort({ created: -1 })
+      .exec();
     res.json({ products });
   } catch (error) {
     errorHandler(next, error.message);

@@ -1,6 +1,7 @@
 const { errorHandler } = require("../utils");
 const Order = require("../models/order");
 const User = require("../models/user");
+const Product = require("../models/product");
 
 exports.postOrder = async (req, res, next) => {
   const { country, city, address1, address2, zipCode } = req.body;
@@ -19,7 +20,16 @@ exports.postOrder = async (req, res, next) => {
       },
     });
     await order.save();
+
+    user.cart.items.forEach(async (item) => {
+      await Product.updateOne(
+        { _id: item.product },
+        { $inc: { sold: item.quantity } }
+      );
+    });
+
     const newUser = await user.emptyCart();
+
     res.json({ user: newUser, order });
   } catch (error) {
     errorHandler(next, error.message);
@@ -57,9 +67,10 @@ exports.deleteOrder = async (req, res, next) => {
 
 exports.getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({ user: req.userId }).populate(
-      "items.product"
-    );
+    const orders = await Order.find({ user: req.userId })
+      .populate("items.product")
+      .sort({ date: -1 })
+      .exec();
     res.json({ orders });
   } catch (error) {
     errorHandler(next, error.message);

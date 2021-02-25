@@ -93,4 +93,8 @@ productSchema.methods.addReview = async function (
   return product;
 };
 
+productSchema.statics.incrementSold = function () {
+  console.log(this);
+};
+
 module.exports = mongoose.model("Product", productSchema);
