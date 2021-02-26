@@ -39,7 +39,7 @@ app.post(
       const user = await User.findById(req.userId);
       const paymentIntent = await stripe.paymentIntents.create({
         // Stripe accept the amount in cents
-        amount: user.cart.price * 100,
+        amount: parseInt(user.cart.price * 100),
         currency: "usd",
       });
       res.json({ clientSecret: paymentIntent.client_secret });
